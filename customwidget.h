@@ -1,28 +1,29 @@
 #ifndef CUSTOMWIDGET_H
 #define CUSTOMWIDGET_H
 
-#include <QMenu>
-#include <QToolBar>
+#include <QGLWidget>
 #include <QWidget>
+#include <vector>
+#include "Polygon.h"
 
-class CustomWidget : public QWidget
+using namespace std::vector;        // 命名空间
+using namespace Mcoder;             // 自定义命名空间
+
+class CustomWidget : public QGLWidget
 {
     Q_OBJECT
 public:
     explicit CustomWidget(QWidget *parent = 0);
     ~CustomWidget();
 
-signals:
-
-public slots:
+protected:
+   void initializeGL();
+   void paintGL();
+   void resizeGL(int w, int h);
 
 private:
-
-    void initUI();              // 初始化界面元素
-    void deleteUI();            // 释放UI元素内存空间
-
-    QToolBar *toolBar;
-
+    vector<Polygon*> polygons;
+    Polygon * temp;             // 正在画的，仍为画完的多边形
 
 
 

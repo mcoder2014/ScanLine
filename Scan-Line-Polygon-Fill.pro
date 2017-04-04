@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,7 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    customwidget.cpp
+    customwidget.cpp \
+    Point.cpp \
+    Edge.cpp \
+    Polygon.cpp
 
 HEADERS  += mainwindow.h \
-    customwidget.h
+    customwidget.h \
+    Point.h \
+    Edge.h \
+    Polygon.h
