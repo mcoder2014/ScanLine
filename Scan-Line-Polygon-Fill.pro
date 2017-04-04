@@ -35,3 +35,8 @@ HEADERS  += mainwindow.h \
     Point.h \
     Edge.h \
     Polygon.h
+
+INCLUDEPATH += ./glutdlls37beta
+
+LIBS += ./glutdlls37beta/glut.lib \
+        ./glutdlls37beta/glut32.lib

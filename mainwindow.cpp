@@ -27,11 +27,15 @@ void MainWindow::initUI()
     QDesktopWidget *desktop = QApplication::desktop();
 
     QRect screenRect = desktop->screenGeometry(desktop->primaryScreen());       // 获取默认系统默认桌面的桌面大小
-    float multiple = 4.0/5;
-    this->setFixedSize(multiple*screenRect.width(),
+    float multiple = 3.0/5;
+    this->setMinimumSize(multiple*screenRect.width(),
                        multiple*screenRect.height());             // 设置大小为4/5
     this->move(0.5*(1-multiple) * screenRect.width(),
                0.5 * (1 - multiple) * screenRect.height());       // 移动窗口位置
+
+    this->widget = new CustomWidget();
+    this->setCentralWidget(widget);         // 将openGL画板放在主窗口中间
+
 
     this->setVisible(true);     // 设置为可见
 
@@ -46,8 +50,15 @@ void MainWindow::initUI()
 void MainWindow::deleteUI()
 {
     // 工具栏
-    if(toolBar != NULL) {
-        delete toolBar;
-        toolBar = NULL;
+    if(this->toolBar != NULL) {
+        delete this->toolBar;
+        this->toolBar = NULL;
+    }
+
+    // 画板
+    if(this->widget !=NULL)
+    {
+        delete this->widget;
+        this->widget = NULL;
     }
 }

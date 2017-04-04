@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "customwidget.h"
+
 #include <QMainWindow>
 
 class MainWindow : public QMainWindow
@@ -17,6 +19,7 @@ private:
     void deleteUI();            // 释放UI元素内存空间
 
     QToolBar *toolBar;          // 初始化一个工具栏
+    CustomWidget * widget;      // openGL 画板
 
 };
 
