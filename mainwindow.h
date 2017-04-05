@@ -3,6 +3,7 @@
 
 #include "customwidget.h"
 
+#include <QLabel>
 #include <QMainWindow>
 
 class MainWindow : public QMainWindow
@@ -22,8 +23,11 @@ private:
     void connectAction();       // 初始化界面后，连接操作
     void deleteAction();        // 释放QAction
 
-    QMenu *menu;                // 初始化菜单
-    QToolBar *toolBar;          // 初始化一个工具栏
+    QMenu * filesMenu;          // 初始化菜单
+    QMenu * editMenu;           // 操作菜单
+    QMenu * aboutMenu;          // 关于菜单
+
+    QToolBar * toolBar;         // 初始化一个工具栏
     CustomWidget * widget;      // openGL 画板
 
     QAction * newAction;        // 新建画面
@@ -36,6 +40,14 @@ private:
     QAction * fillAction;       // 填充多边形
     QAction * colorAction;      // 切换颜色
 
+    QAction * exitAction;       // 退出程序
+
+    QLabel * msgLabel;          // 添加状态栏
+
+    void test()                // 用来测试信号槽是否通了
+    {
+        qDebug("信号槽通了");
+    }
 };
 
 #endif // MAINWINDOW_H

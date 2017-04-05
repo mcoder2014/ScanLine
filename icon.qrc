@@ -10,5 +10,6 @@
         <file>source/polygon.png</file>
         <file>source/save.png</file>
         <file>source/delete.png</file>
+        <file>source/exit.png</file>
     </qresource>
 </RCC>
