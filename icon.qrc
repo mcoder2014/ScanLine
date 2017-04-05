@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file>source/clean.png</file>
+        <file>source/color.png</file>
+        <file>source/fill.png</file>
+        <file>source/icon.png</file>
+        <file>source/modes.png</file>
+        <file>source/new.png</file>
+        <file>source/open.png</file>
+        <file>source/polygon.png</file>
+        <file>source/save.png</file>
+        <file>source/delete.png</file>
+    </qresource>
+</RCC>

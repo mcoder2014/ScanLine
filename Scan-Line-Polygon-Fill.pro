@@ -8,10 +8,11 @@ QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Scan-Line-Polygon-Fill
+TARGET = Scan_Line_Polygon_Fill_Algorithm
 TEMPLATE = app
 
-CONFIG += warn_on qt
+CONFIG += warn_on qt        # warn_on 尽可能多的显示编译信息
+
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -48,3 +49,8 @@ DESTDIR = ./bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
 RCC_DIR = ./rcc     # .qrc 文件转换后存放路径
 OBJECTS_DIR += ./tmp   # .obj 文件存放路径
+
+RESOURCES += \
+    icon.qrc
+
+RC_ICONS = $$PWD/source/icon.ico

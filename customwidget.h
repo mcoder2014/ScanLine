@@ -7,7 +7,7 @@
 #include "Figure/Polygon.h"
 
 
-using Mcoder::Polygon;             // 自定义命名空间
+using namespace Mcoder;
 using std::vector;        // 命名空间
 
 class CustomWidget : public QGLWidget
@@ -23,9 +23,8 @@ protected:
    void resizeGL(int width, int height);
 
 private:
-    //vector<Polygon* > polygons;
-
-    //Polygon * temp;             // 正在画的，仍为画完的多边形
+    vector<Mcoder::Polygon*> polygons;
+    Mcoder::Polygon * temp;             // 正在画的，仍为画完的多边形
 
 
 

@@ -16,6 +16,7 @@ private:
     vector<Point*> points;       // 点
     vector<Edge*> edges;         // 边
 };
+
 }
 
 #endif // POLYGON_H
