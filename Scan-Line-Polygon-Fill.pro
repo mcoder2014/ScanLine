@@ -28,15 +28,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         mainwindow.cpp \
     customwidget.cpp \
-    Point.cpp \
-    Edge.cpp \
-    Polygon.cpp
+    Figure\Point.cpp \
+    Figure\Edge.cpp \
+    Figure\Polygon.cpp
 
 HEADERS  += mainwindow.h \
     customwidget.h \
-    Point.h \
-    Edge.h \
-    Polygon.h
+    Figure\Point.h \
+    Figure\Edge.h \
+    Figure\Polygon.h
 
 INCLUDEPATH += $$PWD/glutdlls37beta
 # $$PWD 当前工作路径 代表.pro 所在文件夹

@@ -4,7 +4,7 @@
 #include <QtOpenGL/qgl.h>
 #include <QWidget>
 #include <vector>
-#include "Polygon.h"
+#include "Figure/Polygon.h"
 
 
 using Mcoder::Polygon;             // 自定义命名空间
