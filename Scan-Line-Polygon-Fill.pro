@@ -37,7 +37,8 @@ HEADERS  += mainwindow.h \
     customwidget.h \
     Figure\Point.h \
     Figure\Edge.h \
-    Figure\Polygon.h
+    Figure\Polygon.h \
+    mouse.h
 
 INCLUDEPATH += $$PWD/glutdlls37beta
 # $$PWD 当前工作路径 代表.pro 所在文件夹

@@ -155,10 +155,16 @@ void MainWindow::initAction()
 
 }
 
+/***************************************
+ * 连接信号槽
+ * ************************************/
 void MainWindow::connectAction()
 {
-    connect(this->exitAction, SIGNAL(&QAction::triggered),
-            this,SLOT(MainWindow::test));
+    connect(this->exitAction, &QAction::triggered,
+            this,&MainWindow::close);                    // 连接退出程序按钮
+    connect(this->newAction, &QAction::triggered,
+            this, &MainWindow::createNewWidget);         // 创建新画板
+
 }
 
 void MainWindow::deleteAction()
@@ -172,4 +178,26 @@ void MainWindow::deleteAction()
     delete this->backAction;
     delete this->fillAction;
     delete this->colorAction;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  函数头注释
+ * @param  无
+ * @date   2017/04/06
+ */
+void MainWindow::createNewWidget()
+{
+    QLabel *temp = new QLabel(tr("Wait for minutes ..."));      // 用临时QLabel替换widget
+     if(this->widget != NULL)
+     {
+         this->setCentralWidget(temp);
+         delete this->widget;
+         this->widget = NULL;
+     }
+
+     this->widget  = new CustomWidget(this);    // 新建widget
+     this->setCentralWidget(this->widget);
+     delete temp;
+
 }

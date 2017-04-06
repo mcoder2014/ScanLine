@@ -16,12 +16,7 @@ public:
     ~MainWindow();
 
 private:
-    void initUI();              // 初始化界面元素
-    void deleteUI();            // 释放UI元素内存空间
 
-    void initAction();          // 初始化QAction
-    void connectAction();       // 初始化界面后，连接操作
-    void deleteAction();        // 释放QAction
 
     QMenu * filesMenu;          // 初始化菜单
     QMenu * editMenu;           // 操作菜单
@@ -48,6 +43,17 @@ private:
     {
         qDebug("信号槽通了");
     }
+
+    void initUI();              // 初始化界面元素
+    void deleteUI();            // 释放UI元素内存空间
+
+    void initAction();          // 初始化QAction
+    void connectAction();       // 初始化界面后，连接操作
+    void deleteAction();        // 释放QAction
+
+    void createNewWidget();     // 新建画板
+
+
 };
 
 #endif // MAINWINDOW_H

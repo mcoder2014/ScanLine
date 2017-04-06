@@ -26,6 +26,8 @@ private:
     vector<Mcoder::Polygon*> polygons;
     Mcoder::Polygon * temp;             // 正在画的，仍为画完的多边形
 
+    void boundMouse();                  // 绑定鼠标函数
+
 
 
 };
