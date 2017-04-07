@@ -79,7 +79,7 @@ Point *Polygon::getEndPoint()
  */
 void Polygon::paint(int line_strip)
 {
-    if(line_strip == 0)
+    if(line_strip == 1)
     {
         glBegin(GL_LINE_STRIP);
             for(int i = 0; i < this->points.size(); i++)
@@ -89,7 +89,7 @@ void Polygon::paint(int line_strip)
 
         glEnd();
     }
-    else if(line_strip == 1)
+    else if(line_strip == 0)
     {
         glBegin(GL_LINE_LOOP);
             for(int i = 0; i < this->points.size(); i++)

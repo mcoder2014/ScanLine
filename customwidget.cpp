@@ -9,6 +9,7 @@ CustomWidget::CustomWidget(QWidget *parent)
     this->modeFlag = 1;     // 初始默认是无操作状态
     this->temp = NULL;
     this->pushButton = -1;
+    this->setMouseTracking(true);       // 发起鼠标监控
 }
 
 CustomWidget::~CustomWidget()
@@ -113,6 +114,7 @@ void CustomWidget::mouseMoveEvent(QMouseEvent *event)
     this->mouse_y = event->y();
 
     this->updateGL();       // 更新渲染
+    //qDebug()<<"鼠标移动";
 }
 
 /**
@@ -138,7 +140,7 @@ void CustomWidget::mousePressEvent(QMouseEvent *event)
     }
 
     this->pushButton = event->button();      // 暂存点下的鼠标
-
+    this->updateGL();       // 更新渲染
 }
 
 /**
@@ -193,6 +195,7 @@ void CustomWidget::mouseReleaseEvent(QMouseEvent *event)
     }
 
     this->pushButton = -1;
+    this->updateGL();       // 更新渲染
 }
 
 
