@@ -25,6 +25,9 @@ public:
      * 2 绘制多边形-已开始
      */
 
+    void backPolygon();     // 删除上一个多边形
+    void cleanPolygons();   // 清空所有多边形
+
 protected:
    void initializeGL();
    void paintGL();
@@ -41,6 +44,8 @@ private:
     void mouseMoveEvent(QMouseEvent *event);        // 鼠标移动事件
     void mousePressEvent(QMouseEvent *event);       // 鼠标点击事件
     void mouseReleaseEvent(QMouseEvent *event);     // 鼠标释放事件
+
+    void convertMouse(QMouseEvent *event);            // 更改坐标
 
 
 };

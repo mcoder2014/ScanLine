@@ -4,6 +4,12 @@
 #include <QtDebug>
 
 /**
+ * 本类的坐标体系，以画面中心为 原点(0,0) ,因鼠标获取的坐标和openGL 坐标不相符
+ * 设mouse坐标为(x, y); 屏幕宽为w, 屏幕高为h;
+ * 则转换 (w/2 + x, h/2 - y)
+ */
+
+/**
  * @Author Chaoqun
  * @brief  构造函数
  * @param  QWidget *parent
@@ -20,6 +26,56 @@ CustomWidget::CustomWidget(QWidget *parent)
 
 CustomWidget::~CustomWidget()
 {
+    // 多边形
+    if(this->temp !=NULL)
+    {
+        delete this->temp;
+        this->temp = NULL;
+    }
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  删除上一个多边形
+ * @date   2017/04/07
+ */
+void CustomWidget::backPolygon()
+{
+    if(this->modeFlag == 2)
+    {
+        // 如果正在画多边形，尚未画完，删除正在画的多边形
+        delete this->temp;
+        this->temp = NULL;
+        this->modeFlag = 1;     // 置为未绘制状态，防止空指针错误
+    }
+    else if(this->polygons.size() > 0)
+    {
+        this->polygons.pop_back();
+    }
+    this->updateGL();       // 删除后随即刷新场景
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  清空所有多边形
+ * @date   2017/04/07
+ */
+void CustomWidget::cleanPolygons()
+{
+    if(this->modeFlag == 2)
+    {
+        // 如果正在画多边形，尚未画完，删除正在画的多边形
+        delete this->temp;
+        this->temp = NULL;
+        this->modeFlag = 1;     // 置为未绘制状态，防止空指针错误
+    }
+
+    if(this->polygons.size() > 0)
+    {
+        this->polygons.clear();
+    }
+
+    this->updateGL();       // 删除后随机刷新
 }
 
 /**
@@ -66,7 +122,7 @@ void CustomWidget::paintGL()
         glBegin(GL_LINES);
            Point * start = this->temp->getEndPoint();
            glVertex2f(start->getX(),start->getY());
-           glVertex2f(this->mouse_x,this->height - this->mouse_y);
+           glVertex2f(this->mouse_x,this->mouse_y);
         glEnd();
     }
 
@@ -104,7 +160,8 @@ void CustomWidget::resizeGL(int width, int height)
     glMatrixMode( GL_PROJECTION );                      // GL_PROJECTION,对投影矩阵应用随后的矩阵操作.
     glLoadIdentity();                                   // 重置当前指定的矩阵为单位矩阵
     //gluPerspective( 45.0, (GLfloat)width/(GLfloat)height, 0.1, 100.0 );         // 设置锥台投影
-    gluOrtho2D(0,width,0,height);                       // 设置渲染为2D
+    gluOrtho2D(-width/2.0,width/2,
+               -height/2.0,height/2);                       // 设置渲染为2D
     glMatrixMode( GL_MODELVIEW );                       // GL_MODELVIEW,对模型视景矩阵堆栈应用随后的矩阵操作
     glLoadIdentity();
 
@@ -121,8 +178,7 @@ void CustomWidget::resizeGL(int width, int height)
  */
 void CustomWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    this->mouse_x = event->x();
-    this->mouse_y = event->y();
+    this->convertMouse(event);
 
     if(this->modeFlag != 0)
         this->updateGL();       // 更新渲染
@@ -137,8 +193,8 @@ void CustomWidget::mouseMoveEvent(QMouseEvent *event)
  */
 void CustomWidget::mousePressEvent(QMouseEvent *event)
 {
-    this->mouse_x = event->x();
-    this->mouse_y = event->y();
+    this->convertMouse(event);
+
     if(this->modeFlag == 1 || this->modeFlag == 2)
     {
         // 绘制多边形
@@ -163,8 +219,7 @@ void CustomWidget::mousePressEvent(QMouseEvent *event)
  */
 void CustomWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    this->mouse_x = event->x();
-    this->mouse_y = event->y();
+    this->convertMouse(event);
 
     qDebug() << "x: "<<this->mouse_x
              << " y: "<<this->mouse_y;
@@ -177,7 +232,7 @@ void CustomWidget::mouseReleaseEvent(QMouseEvent *event)
             // 开始绘制第一个多边形
             this->temp = new Mcoder::Polygon();     // 新建多边形
 
-            this->temp->push(this->mouse_x,this->height - this->mouse_y);
+            this->temp->push(this->mouse_x,this->mouse_y);
 
             this->modeFlag = 2;           // 绘制完第一个就进入状态2
         }
@@ -185,7 +240,7 @@ void CustomWidget::mouseReleaseEvent(QMouseEvent *event)
         {
             // 绘制下一个点
 
-            this->temp->push(this->mouse_x,this->height - this->mouse_y);
+            this->temp->push(this->mouse_x,this->mouse_y);
         }
     }
     else if(this->pushButton == Qt::RightButton)
@@ -219,6 +274,18 @@ void CustomWidget::mouseReleaseEvent(QMouseEvent *event)
 
     this->pushButton = -1;
     this->updateGL();       // 更新渲染
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  用来更改鼠标坐标与实际需求的不对应的地方,结果保存在 this->mouse_x, this->mouse_y 中
+ * @param  参数
+ * @date   2017/04/07
+ */
+void CustomWidget::convertMouse(QMouseEvent *event)
+{
+    this->mouse_x = event->x()-this->width/2;
+    this->mouse_y = this->height/2.0 - event->y();
 }
 
 

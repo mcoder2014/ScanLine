@@ -167,7 +167,21 @@ void MainWindow::connectAction()
             this, &MainWindow::createNewWidget);         // 创建新画板
     connect(this->polygonAction, &QAction::triggered,
             this,&MainWindow::drawPolygon);              // 切换画多边形模式
+    connect(this->backAction, &QAction::triggered,
+            this->widget,&CustomWidget::backPolygon);    // 删除上一步
+    connect(this->cleanAction,&QAction::triggered,
+            this->widget,&CustomWidget::cleanPolygons);  // 清空所有多边形
 
+    connect(this->fillAction,&QAction::triggered,
+            this,&MainWindow::test);
+    connect(this->modesAction,&QAction::triggered,
+            this,&MainWindow::test);
+    connect(this->saveAction,&QAction::triggered,
+            this,&MainWindow::test);
+    connect(this->openAction,&QAction::triggered,
+            this,&MainWindow::test);
+    connect(this->colorAction,&QAction::triggered,
+            this,&MainWindow::test);
 }
 
 void MainWindow::deleteAction()
@@ -243,9 +257,8 @@ void MainWindow::drawPolygon()
                             tr("Warning"),
                             tr("Please finish your drawing polygon first! \n Add a new point by left clicking your mouse! \n Finish it by right clicking your mouse!"),
                                                  QMessageBox::Ok);
-            this->widget->modeFlag = 0;     // 设置为修改
+            //this->widget->modeFlag = 0;     // 设置为修改
         }
-
 
     }
 }
