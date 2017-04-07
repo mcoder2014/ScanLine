@@ -75,7 +75,7 @@ Point *Polygon::getEndPoint()
  * @Author Chaoqun
  * @brief  绘制多边形
  * @param  int line_strip = 0 -> 折线，首尾不相连 1-> 多边形，首尾相连
- * @date   2017/xx/xx
+ * @date   2017/04/07
  */
 void Polygon::paint(int line_strip)
 {
@@ -99,4 +99,13 @@ void Polygon::paint(int line_strip)
 
         glEnd();
     }
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  扫描线填充算法
+ * @date   2017/04/07
+ */
+void Polygon::scanLine()
+{
 }

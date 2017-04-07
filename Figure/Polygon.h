@@ -23,6 +23,8 @@ public:
 
     void paint(int line_strip = 0);             // 用来画多边形
 
+    void scanLine();            // 扫描线填充算法
+
 private:
     vector<Point*> points;       // 点
     //vector<Edge*> edges;         // 边
