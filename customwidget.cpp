@@ -1,12 +1,18 @@
 #include "customwidget.h"
 #include <gl/glut.h>
+#include <QMessageBox>
 #include <QtDebug>
 
-
+/**
+ * @Author Chaoqun
+ * @brief  构造函数
+ * @param  QWidget *parent
+ * @date   2017/04/05
+ */
 CustomWidget::CustomWidget(QWidget *parent)
     : QGLWidget(parent)
 {
-    this->modeFlag = 1;     // 初始默认是无操作状态
+    this->modeFlag = 0;     // 初始默认是无操作状态
     this->temp = NULL;
     this->pushButton = -1;
     this->setMouseTracking(true);       // 发起鼠标监控
@@ -48,7 +54,7 @@ void CustomWidget::paintGL()
 
     for(int i = 0 ; i < this->polygons.size(); i++)
     {
-        qDebug() << "执行了polygon->paint()"<< i ;
+        //qDebug() << "执行了polygon->paint()"<< i ;
         (this->polygons[i])->paint();   // 绘制图形
     }
 
@@ -57,6 +63,11 @@ void CustomWidget::paintGL()
     {
         qDebug() << "执行了temp-> paint()";
         this->temp->paint(1);
+        glBegin(GL_LINES);
+           Point * start = this->temp->getEndPoint();
+           glVertex2f(start->getX(),start->getY());
+           glVertex2f(this->mouse_x,this->height - this->mouse_y);
+        glEnd();
     }
 
 
@@ -113,7 +124,8 @@ void CustomWidget::mouseMoveEvent(QMouseEvent *event)
     this->mouse_x = event->x();
     this->mouse_y = event->y();
 
-    this->updateGL();       // 更新渲染
+    if(this->modeFlag != 0)
+        this->updateGL();       // 更新渲染
     //qDebug()<<"鼠标移动";
 }
 
@@ -185,12 +197,23 @@ void CustomWidget::mouseReleaseEvent(QMouseEvent *event)
         }
         else if(this->modeFlag == 2)
         {
-            // 绘制下一个点
-            this->temp->push(this->mouse_x,this->height - this->mouse_y);
-
-            this->polygons.push_back(this->temp);   // 将多边形添加到数组
-            this->temp = NULL;          // 指针置空
-            this->modeFlag = 1;
+            // 结束绘制
+            //this->temp->push(this->mouse_x,this->height - this->mouse_y);
+            if(this->temp->getSize() > 2)
+            {
+                this->polygons.push_back(this->temp);   // 将多边形添加到数组
+                this->temp = NULL;          // 指针置空
+                this->modeFlag = 1;
+            }
+            else
+            {
+                // 提醒用户，需要绘制多少个点才可以
+                QMessageBox::StandardButton reply;
+                reply = QMessageBox::information(this,
+                                tr("Warning! Your manipulation is against the rule!"),
+                                tr("You should draw at least three points."),
+                                                     QMessageBox::Ok);
+            }
         }
     }
 

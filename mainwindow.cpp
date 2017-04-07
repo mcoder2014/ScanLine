@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QMenuBar>
 #include <QStatusBar>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -42,7 +43,7 @@ void MainWindow::initUI()
     this->move(0.5*(1-multiple) * screenRect.width(),
                0.5 * (1 - multiple) * screenRect.height());       // 移动窗口位置
 
-    this->widget = new CustomWidget();
+    this->widget = new CustomWidget(this);
     this->setCentralWidget(widget);         // 将openGL画板放在主窗口中间
 
     this->setWindowIcon(QIcon(":/icon/source/icon.png"));       // 设置窗口左上角图标
@@ -164,6 +165,8 @@ void MainWindow::connectAction()
             this,&MainWindow::close);                    // 连接退出程序按钮
     connect(this->newAction, &QAction::triggered,
             this, &MainWindow::createNewWidget);         // 创建新画板
+    connect(this->polygonAction, &QAction::triggered,
+            this,&MainWindow::drawPolygon);              // 切换画多边形模式
 
 }
 
@@ -200,4 +203,49 @@ void MainWindow::createNewWidget()
      this->setCentralWidget(this->widget);
      delete temp;
 
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  点击开始绘制多边形
+ * @param  参数
+ * @date   2017/04/07
+ */
+void MainWindow::drawPolygon()
+{
+    if(this->widget != NULL)
+    {
+        if(this->widget->modeFlag == 0)
+        {
+            // 提醒用户，切换为绘制多边形
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::information(this,
+                            tr("Information"),
+                            tr("You have turned the mode to 'Draw Polygons'!"),
+                                                 QMessageBox::Ok);
+            this->widget->modeFlag = 1;     // 设置为修改
+        }
+        else if(this->widget->modeFlag == 1)
+        {
+            // 提醒用户，切换为不绘制多边形
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::information(this,
+                            tr("Information"),
+                            tr("You have turned the mode to 'Dont't Draw'!"),
+                                                 QMessageBox::Ok);
+            this->widget->modeFlag = 0;     // 设置为修改
+        }
+        else if(this->widget->modeFlag == 2)
+        {
+            // 提醒用户，完成当前多边形
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::information(this,
+                            tr("Warning"),
+                            tr("Please finish your drawing polygon first! \n Add a new point by left clicking your mouse! \n Finish it by right clicking your mouse!"),
+                                                 QMessageBox::Ok);
+            this->widget->modeFlag = 0;     // 设置为修改
+        }
+
+
+    }
 }

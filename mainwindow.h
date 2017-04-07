@@ -53,6 +53,8 @@ private:
 
     void createNewWidget();     // 新建画板
 
+    void drawPolygon();         // 切换绘制与未绘制状态
+
 
 };
 
