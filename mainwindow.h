@@ -4,7 +4,9 @@
 #include "customwidget.h"
 
 #include <QLabel>
+#include <QLineEdit>
 #include <QMainWindow>
+#include <QSlider>
 
 class MainWindow : public QMainWindow
 {
@@ -34,8 +36,11 @@ private:
     QAction * backAction;     // 删除上一个多边形
     QAction * fillAction;       // 填充多边形
     QAction * colorAction;      // 切换颜色
+    QAction * exitAction;       // 退出程序->藏于菜单中
 
-    QAction * exitAction;       // 退出程序
+    QLabel * scale_label;       // 用来提醒本部分是缩放功能
+    QSlider * scale_slider;     // 绘图区缩放比例
+    QLineEdit * scale_edit;
 
     QLabel * msgLabel;          // 添加状态栏
 
@@ -51,9 +56,13 @@ private:
     void connectAction();       // 初始化界面后，连接操作
     void deleteAction();        // 释放QAction
 
+
+
     void createNewWidget();     // 新建画板
 
     void drawPolygon();         // 切换绘制与未绘制状态
+private slots:
+    void setLineEditValue(int value);   // 显示放大倍数
 
 
 };

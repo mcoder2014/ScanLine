@@ -27,17 +27,22 @@ public:
 
     void backPolygon();     // 删除上一个多边形
     void cleanPolygons();   // 清空所有多边形
+    float getScale();       // 获得缩放倍数
+
+    void resizeGL(float scale);        // 调整缩放倍数
 
 protected:
    void initializeGL();
    void paintGL();
    void resizeGL(int width, int height);
+   void resizeGL(int width, int height, float scale);       // 设置屏幕缩放
+
 
 private:
     vector<Mcoder::Polygon*> polygons;
     Mcoder::Polygon * temp;             // 正在画的，仍为画完的多边形
     int width,height;                   // 画布的宽和高
-
+    float scale;            // 缩放值
     int mouse_x, mouse_y;    // 用来暂存鼠标
     int pushButton;          //用来暂存点下的鼠标按键 非点击状态给更改为 -1
 

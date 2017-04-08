@@ -50,6 +50,7 @@ void MainWindow::initUI()
 
     this->toolBar = this->addToolBar(tr("Canvas ToolBar"));          // 增加工具栏
 
+
     // 增加菜单栏
     this->filesMenu = this->menuBar()->addMenu(tr("File"));
     this->editMenu = this->menuBar()->addMenu(tr("Edit"));
@@ -88,6 +89,26 @@ void MainWindow::deleteUI()
     {
         delete this->msgLabel;
         this->msgLabel = NULL;
+    }
+
+    // 滑动条
+    if(this->scale_slider != NULL)
+    {
+        delete this->scale_slider;
+        this->scale_slider = NULL;
+    }
+
+    // 显示器
+    if(this->scale_edit != NULL)
+    {
+        delete this->scale_edit;
+        this->scale_edit = NULL;
+    }
+
+    if(this->scale_label != NULL)
+    {
+        delete this->scale_label;
+        this->scale_label = NULL;
     }
 
 }
@@ -154,6 +175,30 @@ void MainWindow::initAction()
 
     this->toolBar->addActions(list);        // 添加按钮到工具栏
 
+    // label用来提示本部分的缩放功能
+    this->scale_label = new QLabel(tr("Scale:"));
+
+    // 进度条用来控制widget缩放比例
+    this->scale_slider = new QSlider(Qt::Horizontal);
+    this->scale_slider->setMinimum(1);          // 不能为0
+    this->scale_slider->setMaximum(50);
+    this->scale_slider->setValue(10);           // 设置初始倍数为 1
+    this->scale_slider->setSingleStep(1);       // 设置间隔为 1
+    // 设置大小
+    this->scale_slider->setMinimumWidth(50);
+    this->scale_slider->setMaximumWidth(200);
+
+    // 显示器
+    this->scale_edit = new QLineEdit(tr("1.0"));
+    this->scale_edit->setReadOnly(true);            // 设置只读不让别人手动输入
+    // 设置大小
+    this->scale_edit->setMinimumWidth(20);
+    this->scale_edit->setMaximumWidth(50);
+
+    this->toolBar->addWidget(this->scale_label);
+    this->toolBar->addWidget(this->scale_edit);
+    this->toolBar->addWidget(this->scale_slider);
+
 }
 
 /***************************************
@@ -182,6 +227,10 @@ void MainWindow::connectAction()
             this,&MainWindow::test);
     connect(this->colorAction,&QAction::triggered,
             this,&MainWindow::test);
+
+    // 缩放画布倍数
+    connect(this->scale_slider,SIGNAL(valueChanged(int)),
+            this,SLOT(setLineEditValue(int)));
 }
 
 void MainWindow::deleteAction()
@@ -195,6 +244,26 @@ void MainWindow::deleteAction()
     delete this->backAction;
     delete this->fillAction;
     delete this->colorAction;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  调整
+ * @param  参数
+ * @date   2017/04/09
+ */
+void MainWindow::setLineEditValue(int value)
+{
+    QString str;
+    this->scale_edit->setText(str.setNum(value/10.0, 'f' , 2));
+    if(this->widget!=NULL)
+    {
+        this->widget->resizeGL(value/10.0);
+    }
+    else
+    {
+        qDebug("this.widget 为空");
+    }
 }
 
 /**
@@ -216,6 +285,11 @@ void MainWindow::createNewWidget()
      this->widget  = new CustomWidget(this);    // 新建widget
      this->setCentralWidget(this->widget);
      delete temp;
+
+     if(this->scale_slider != NULL)
+     {
+         this->scale_slider->setValue(10);  // 设置初始值
+     }
 
 }
 
