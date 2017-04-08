@@ -27,15 +27,13 @@ public:
     void paint(int line_strip = 0);             // 用来画多边形
 
     void scanLine();            // 扫描线填充算法
-
-    bool rebuildEdge();      // 生成边
     bool buildEdgeTable();   // 生成sorted edge table
     void print();            // 输出多边形信息
 
 private:
     vector<Point*> points;       // 点
-    vector<Edge*> edges;         // 边
-    vector<List<EdgeS*>*> sortedEdgeTable;
+    vector<list<EdgeS*>*> sortedEdgeTable;
+    vector<Edge* > edge_horizontal;     // 水平边
 
     Point min;          // 多边形包围矩形的 左下角
     Point max;          // 多边形包围矩形的 右下角

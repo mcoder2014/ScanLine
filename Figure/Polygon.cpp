@@ -30,8 +30,6 @@ void Polygon::push(int x, int y)
 
     this->points.push_back(p_end);   // 插入一个点
 
-    Edge * edge = new Edge(*p_start ,*p_end);   // 新建边
-    this->edges.push_back(edge);
 }
 
 /**
@@ -150,41 +148,11 @@ void Polygon::scanLine()
     }
 
     // 确定了扫描线范围 min.y -> max.y
-
+    this->buildEdgeTable();
 
 
 }
 
-/**
- * @Author Chaoqun
- * @brief  重新构建边表
- * @date   2017/04/08
- * @return bool true 构建成功 false 构建失败
- */
-bool Polygon::rebuildEdge()
-{
-    this->edges.clear();    // 清理边表
-    if(this->getSize() < 3)
-    {
-        return false ;     // 三条边算不上多边形
-    }
-
-    Point* p_start = this->points[0];
-    Point* p_end;
-    int size = this->getSize();
-
-    for(int i = 1; i<size; i++)
-    {
-        p_end = this->points[i];
-        this->edges.push_back(new Edge(*p_start, *p_end));
-        p_start = p_end;
-    }
-
-    p_end = this->points[0];
-    this->edges.push_back(new Edge(*p_start, *p_end));
-
-    return true;
-}
 
 /**
  * @Author Chaoqun
@@ -201,6 +169,7 @@ bool Polygon::buildEdgeTable()
     }
 
     this->sortedEdgeTable.clear();  // 清空边表
+    this->edge_horizontal.clear();  // 清空水平边
 
     int ymin = (double)(this->min.getY() - 1);
     int ymax = (double)(this->max.getY() + 1);
@@ -228,18 +197,45 @@ bool Polygon::buildEdgeTable()
         }
         else if(p_start->getY() == p_end->getY())
         {
-            // 水平边不加入数组中，单独处理
-
+            // 水平边不加入数组中，加入水平边表中单独处理
+            this->edge_horizontal.push_back(new Edge(*p_start, *p_end));
             continue;
         }
 
         double dx = (p_up->getX() - p_down->getX()) /
                 (p_up->getY() - p_down->getY());        // 斜率的倒数
+        double y_min = p_down->getY();                  // 最小y值
+        double xi = p_down->getX();                     // 最小x值
+        double y_max = p_up->getY();                    // 最大y值
 
         // 线段去掉低的那个点
+        if(dx > 1||dx < -1)
+        {
+            // x方向去掉一个点
+            if(dx < 0)
+            {
+                xi = xi - 1;
+            }
+            else if(dx > 0)
+            {
+                xi = xi + 1;
+            }
 
+        }
+        else
+        {
+            // y方向去掉一个点
+            y_min = y_min + 1;
+        }
 
-
+        list<EdgeS *> * list_temp = this->sortedEdgeTable[(int)(y_min - this->min.getY())];
+        if(list_temp == NULL)
+        {
+            // 如果这个队列为空的话
+            this->sortedEdgeTable[(int)(y_min - this->min.getY())] = list_temp
+                    = new list<EdgeS *>();      // 新建队列
+        }
+        list_temp->push_back(new EdgeS(xi ,dx, y_max));
 
         p_start = p_end;
     }
@@ -264,12 +260,4 @@ void Polygon::print()
         std::cout << " ";
     }
 
-    std::cout << "\nEdges:";
-    int e_size = this->edges.size();
-    for(int i = 0; i < e_size; i++)
-    {
-        (this->edges[i])->print();
-        std::cout << " ";
-    }
-    std::cout << std::endl;
 }
