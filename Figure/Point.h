@@ -15,7 +15,10 @@ public:
     void setY(double y);
     double getY();
 
+    void set(double x, double y);
+
     void copy(const Point& point);
+    void print();       // 输出点的信息
 
 // 重载运算符
 

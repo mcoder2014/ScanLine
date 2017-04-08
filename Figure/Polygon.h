@@ -1,9 +1,12 @@
 #ifndef POLYGON_H
 #define POLYGON_H
-#include<vector>
-#include"Point.h"
-#include"Edge.h"
+#include <vector>
+#include <list>
+#include "Point.h"
+#include "Edge.h"
+#include "edges.h"
 using std::vector;
+using std::list;
 
 
 namespace Mcoder {
@@ -25,9 +28,17 @@ public:
 
     void scanLine();            // 扫描线填充算法
 
+    bool rebuildEdge();      // 生成边
+    bool buildEdgeTable();   // 生成sorted edge table
+    void print();            // 输出多边形信息
+
 private:
     vector<Point*> points;       // 点
-    //vector<Edge*> edges;         // 边
+    vector<Edge*> edges;         // 边
+    vector<List<EdgeS*>*> sortedEdgeTable;
+
+    Point min;          // 多边形包围矩形的 左下角
+    Point max;          // 多边形包围矩形的 右下角
 };
 
 }

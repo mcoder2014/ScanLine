@@ -1,6 +1,7 @@
 #include "Polygon.h"
 #include <gl/glut.h>
 #include "Point.h"
+#include <iostream>
 
 using namespace Mcoder;
 using std::vector;
@@ -24,7 +25,13 @@ Polygon::Polygon(vector<Point *>& points)
  */
 void Polygon::push(int x, int y)
 {
-    this->points.push_back(new Point(x, y));   // 插入一个点
+    Point * p_start = this->getEndPoint();
+    Point * p_end = new Point(x, y);
+
+    this->points.push_back(p_end);   // 插入一个点
+
+    Edge * edge = new Edge(*p_start ,*p_end);   // 新建边
+    this->edges.push_back(edge);
 }
 
 /**
@@ -108,4 +115,161 @@ void Polygon::paint(int line_strip)
  */
 void Polygon::scanLine()
 {
+    if(this->getSize() < 3)
+    {
+        // 如果小于三个点，则不是多边形，无法填充
+        return ;
+    }
+
+    // 确定扫描线的范围
+    this->min.copy(*this->points[0]);
+    this->max.copy(*this->points[0]);
+    int size = this->getSize();
+
+    for(int i = 0; i < size; i++)
+    {
+        Point * temp = this->points[i];
+
+        if(temp->getX() < min.getX())
+        {
+            min.setX(temp->getX());
+        }
+        else if(temp->getX() > max.getX())
+        {
+            max.setX(temp->getX());
+        }
+
+        if(temp->getY() < min.getY())
+        {
+            min.setY(temp->getY());
+        }
+        else if(temp->getY() > max.getY())
+        {
+            max.setY(temp->getY());
+        }
+    }
+
+    // 确定了扫描线范围 min.y -> max.y
+
+
+
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  重新构建边表
+ * @date   2017/04/08
+ * @return bool true 构建成功 false 构建失败
+ */
+bool Polygon::rebuildEdge()
+{
+    this->edges.clear();    // 清理边表
+    if(this->getSize() < 3)
+    {
+        return false ;     // 三条边算不上多边形
+    }
+
+    Point* p_start = this->points[0];
+    Point* p_end;
+    int size = this->getSize();
+
+    for(int i = 1; i<size; i++)
+    {
+        p_end = this->points[i];
+        this->edges.push_back(new Edge(*p_start, *p_end));
+        p_start = p_end;
+    }
+
+    p_end = this->points[0];
+    this->edges.push_back(new Edge(*p_start, *p_end));
+
+    return true;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  生成边表
+ * @return bool
+ * @date   2017/04/08
+ */
+bool Polygon::buildEdgeTable()
+{
+
+    if(this->getSize() < 3)
+    {
+        return false ;     // 三条边算不上多边形
+    }
+
+    this->sortedEdgeTable.clear();  // 清空边表
+
+    int ymin = (double)(this->min.getY() - 1);
+    int ymax = (double)(this->max.getY() + 1);
+    int size_edgeTable = ymax - ymin;
+    this->sortedEdgeTable.resize(size_edgeTable);       // 设置边表大小
+
+    Point* p_start = this->points[0];
+    Point* p_end;
+    int size = this->getSize();
+
+    for(int i = 1; i<size; i++)
+    {
+        p_end = this->points[i];
+        // 第一条边开始
+        Point * p_up, *p_down;
+        if(p_start->getY() > p_end->getY())
+        {
+            p_up = p_start;
+            p_down = p_end;
+        }
+        else if(p_start->getY() < p_end->getY())
+        {
+            p_up = p_end;
+            p_down = p_start;
+        }
+        else if(p_start->getY() == p_end->getY())
+        {
+            // 水平边不加入数组中，单独处理
+
+            continue;
+        }
+
+        double dx = (p_up->getX() - p_down->getX()) /
+                (p_up->getY() - p_down->getY());        // 斜率的倒数
+
+        // 线段去掉低的那个点
+
+
+
+
+        p_start = p_end;
+    }
+
+    p_end = this->points[0];
+
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  输出多边形信息
+ * @return void
+ * @date   2017/04/08
+ */
+void Polygon::print()
+{
+    std::cout << "Points:";
+    int p_size = this->points.size();
+    for(int i = 0; i < p_size; i++)
+    {
+        (this->points[i])->print();
+        std::cout << " ";
+    }
+
+    std::cout << "\nEdges:";
+    int e_size = this->edges.size();
+    for(int i = 0; i < e_size; i++)
+    {
+        (this->edges[i])->print();
+        std::cout << " ";
+    }
+    std::cout << std::endl;
 }

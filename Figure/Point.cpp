@@ -1,5 +1,5 @@
 #include "Point.h"
-
+#include <iostream>
 using namespace Mcoder;         // 自定义的类型都放在这个命名空间里了
 
 Point::Point()
@@ -41,11 +41,36 @@ double Point::getY()
     return this->y;
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  设置点
+ * @param  double x
+ * @param  double y
+ * @date   2017/04/08
+ */
+void Point::set(double x, double y)
+{
+    this->x = x;
+    this->y = y;
+}
+
 // 复制另一个点
 void Point::copy(const Point &point)
 {
     this->x = point.x;
     this->y = point.y;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  输出点的信息
+ * @return void
+ * @date   2017/04/08
+ */
+void Point::print()
+{
+    std::cout<< "<" << this->x
+             << "," << this->y <<">";
 }
 
 // 重载运算符等于号
