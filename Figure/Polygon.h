@@ -28,11 +28,12 @@ public:
 
     void scanLine();            // 扫描线填充算法
     bool buildEdgeTable();   // 生成sorted edge table
+    void scan();        // 扫描
     void print();            // 输出多边形信息
 
 private:
     vector<Point*> points;       // 点
-    vector<list<EdgeS*>*> sortedEdgeTable;
+    vector<vector<EdgeS*>*> sortedEdgeTable;
     vector<Edge* > edge_horizontal;     // 水平边
 
     Point min;          // 多边形包围矩形的 左下角

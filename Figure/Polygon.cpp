@@ -25,11 +25,7 @@ Polygon::Polygon(vector<Point *>& points)
  */
 void Polygon::push(int x, int y)
 {
-    Point * p_start = this->getEndPoint();
-    Point * p_end = new Point(x, y);
-
-    this->points.push_back(p_end);   // 插入一个点
-
+    this->points.push_back(new Point(x,y));   // 插入一个点
 }
 
 /**
@@ -228,12 +224,12 @@ bool Polygon::buildEdgeTable()
             y_min = y_min + 1;
         }
 
-        list<EdgeS *> * list_temp = this->sortedEdgeTable[(int)(y_min - this->min.getY())];
+        vector<EdgeS *> * list_temp = this->sortedEdgeTable[(int)(y_min - this->min.getY())];
         if(list_temp == NULL)
         {
             // 如果这个队列为空的话
             this->sortedEdgeTable[(int)(y_min - this->min.getY())] = list_temp
-                    = new list<EdgeS *>();      // 新建队列
+                    = new vector<EdgeS *>();      // 新建队列
         }
         list_temp->push_back(new EdgeS(xi ,dx, y_max));
 
@@ -241,6 +237,43 @@ bool Polygon::buildEdgeTable()
     }
 
     p_end = this->points[0];
+
+    return true;
+}
+
+/**
+ *@Author Chaoqun
+ *@brief  填充
+ *@return void
+ *@date   2017/04/08
+ */
+void Polygon::scan()
+{
+    vector<EdgeS *> edge_active;
+    double y_min = this->min.getY();
+    int size_sortedEdgeTable = this->sortedEdgeTable.size();
+
+    for(int i = 0; i < size_sortedEdgeTable; i++)
+    {
+        // 扫描
+        if(this->sortedEdgeTable[i] != NULL)
+        {
+            vector<EdgeS *> *temp = this->sortedEdgeTable[i];
+            int size_temp = temp->size();
+            for(int i = 0; i < size_temp; i++)
+            {
+                edge_active.push_back(*temp[i]);
+            }
+        }
+
+        if(edge_active.size() == 0)
+        {
+            // 如果队列中无点
+            continue;
+        }
+        int y_scan = (int)y_min + i;    // 当前扫描的行数
+
+    }
 
 }
 
