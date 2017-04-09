@@ -7,15 +7,15 @@ class Point
 {
 public:
     Point();
-    Point(double x, double y);
+    Point(int x, int y);
     Point(const Point& point);      // 拷贝构造函数
 
-    void setX(double x);
-    double getX();
-    void setY(double y);
-    double getY();
+    void setX(int x);
+    int getX();
+    void setY(int y);
+    int getY();
 
-    void set(double x, double y);
+    void set(int x, int y);
 
     void copy(const Point& point);
     void print();       // 输出点的信息
@@ -27,8 +27,8 @@ public:
 
 
 private:
-    double x;   // 点的X坐标
-    double y;   // 点的Y坐标
+    int x;   // 点的X坐标
+    int y;   // 点的Y坐标
 };
 }
 

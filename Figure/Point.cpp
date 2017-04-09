@@ -8,7 +8,7 @@ Point::Point()
     this->y = 0;
 }
 
-Point::Point(double x, double y)
+Point::Point(int x, int y)
 {
     this->x = (int)x;
     this->y = (int)y;
@@ -21,22 +21,22 @@ Point::Point(const Point &point)
     this->y = point.y;
 }
 
-void Point::setX(double x)
+void Point::setX(int x)
 {
     this->x = x;
 }
 
-double Point::getX()
+int Point::getX()
 {
     return this->x;
 }
 
-void Point::setY(double y)
+void Point::setY(int y)
 {
     this->y = y;
 }
 
-double Point::getY()
+int Point::getY()
 {
     return this->y;
 }
@@ -44,11 +44,11 @@ double Point::getY()
 /**
  * @Author Chaoqun
  * @brief  设置点
- * @param  double x
- * @param  double y
+ * @param  int x
+ * @param  int y
  * @date   2017/04/08
  */
-void Point::set(double x, double y)
+void Point::set(int x, int y)
 {
     this->x = x;
     this->y = y;
