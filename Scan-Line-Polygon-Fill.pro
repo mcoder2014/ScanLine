@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     Figure\Point.cpp \
     Figure\Edge.cpp \
     Figure\Polygon.cpp \
-    Figure/edges.cpp
+    Figure/edges.cpp \
+    iopolygon.cpp
 
 HEADERS  += mainwindow.h \
     customwidget.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     Figure\Edge.h \
     Figure\Polygon.h \
     mouse.h \
-    Figure/edges.h
+    Figure/edges.h \
+    iopolygon.h
 
 INCLUDEPATH += $$PWD/glutdlls37beta
 # $$PWD 当前工作路径 代表.pro 所在文件夹
