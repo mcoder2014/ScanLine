@@ -291,6 +291,12 @@ void MainWindow::createNewWidget()
          this->scale_slider->setValue(10);  // 设置初始值
      }
 
+     //this->connectAction();     // 重新建立连接
+     connect(this->backAction, &QAction::triggered,
+             this->widget,&CustomWidget::backPolygon);    // 删除上一步
+     connect(this->cleanAction,&QAction::triggered,
+             this->widget,&CustomWidget::cleanPolygons);  // 清空所有多边形
+
 }
 
 /**

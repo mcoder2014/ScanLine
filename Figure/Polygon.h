@@ -38,6 +38,11 @@ private:
 
     Point min;          // 多边形包围矩形的 左下角
     Point max;          // 多边形包围矩形的 右下角
+
+    void addEdgeToTable(Point *p_start, Point *p_end);             // 添加边到排序边表
+    void printScanLine(vector<EdgeS*> activeEdgeTable, int y);     // 画活动边表的扫描线
+    void printHorizontalLine(vector<Edge*> edgeHorizontal);        // 画水平线
+
 };
 
 }

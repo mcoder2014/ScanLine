@@ -122,13 +122,17 @@ void CustomWidget::paintGL()
     for(int i = 0 ; i < this->polygons.size(); i++)
     {
         //qDebug() << "执行了polygon->paint()"<< i ;
+        //(this->polygons[i])->paint();   // 绘制图形
+        //(this->polygons[i])->scan();      // 扫描线填充
+        (this->polygons[i])->scanLine();
+        glColor4f(0.5,0.5,0.5,1.0);
         (this->polygons[i])->paint();   // 绘制图形
     }
 
     // 绘制正在画的多边形
     if(this->temp != NULL)
     {
-        qDebug() << "执行了temp-> paint()";
+        //qDebug() << "执行了temp-> paint()";
         this->temp->paint(1);
         glBegin(GL_LINES);
            Point * start = this->temp->getEndPoint();
@@ -136,20 +140,6 @@ void CustomWidget::paintGL()
            glVertex2f(this->mouse_x,this->mouse_y);
         glEnd();
     }
-
-
-//    glBegin( GL_TRIANGLES );                    // 画三角形
-//      glVertex2f(  1.0, 1.0 );
-//      glVertex2f( 500.0, 100.0);
-//      glVertex2f(  100.0, 500.0);
-//    glEnd();
-
-//    glBegin( GL_QUADS );
-//      glVertex2f( 1000.0,  1000.0);
-//      glVertex2f( 300.0 , 300.0);
-//      glVertex2f(  500.0, 600.0);
-//      glVertex2f( 900.0, 1.0);
-//    glEnd();
 
     //qDebug("执行了paintGL()");
 }
@@ -162,22 +152,6 @@ void CustomWidget::paintGL()
  */
 void CustomWidget::resizeGL(int width, int height)
 {
-//    if ( height == 0 )      // 好像高是除数，不能为0
-//    {
-//      height = 1;
-//    }
-
-//    glViewport( 0, 0, (GLint)width, (GLint)height );    // 从 0,0 开始绘制指定大小的视图
-//    glMatrixMode( GL_PROJECTION );                      // GL_PROJECTION,对投影矩阵应用随后的矩阵操作.
-//    glLoadIdentity();                                   // 重置当前指定的矩阵为单位矩阵
-//    //gluPerspective( 45.0, (GLfloat)width/(GLfloat)height, 0.1, 100.0 );         // 设置锥台投影
-//    gluOrtho2D(-width/2.0,width/2,
-//               -height/2.0,height/2);                       // 设置渲染为2D
-//    glMatrixMode( GL_MODELVIEW );                       // GL_MODELVIEW,对模型视景矩阵堆栈应用随后的矩阵操作
-//    glLoadIdentity();
-
-//    this->width = width;
-//    this->height = height;
 
     this->resizeGL(width,height,this->scale);    // 用当前的缩放倍数
 }
@@ -315,6 +289,7 @@ void CustomWidget::mouseReleaseEvent(QMouseEvent *event)
             //this->temp->push(this->mouse_x,this->height - this->mouse_y);
             if(this->temp->getSize() > 2)
             {
+                //this->temp->scanLine();            // 计算边表
                 this->polygons.push_back(this->temp);   // 将多边形添加到数组
                 this->temp = NULL;          // 指针置空
                 this->modeFlag = 1;
