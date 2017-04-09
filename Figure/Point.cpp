@@ -10,8 +10,8 @@ Point::Point()
 
 Point::Point(double x, double y)
 {
-    this->x = x;
-    this->y = y;
+    this->x = (int)x;
+    this->y = (int)y;
 }
 
 // 拷贝构造函数
