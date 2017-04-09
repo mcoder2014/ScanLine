@@ -113,6 +113,7 @@ void Polygon::scanLine()
     if(this->getSize() < 3)
     {
         // 如果小于三个点，则不是多边形，无法填充
+        qDebug()<<"小于三个点，不是多边形 ";
         return ;
     }
 
@@ -168,9 +169,9 @@ bool Polygon::buildEdgeTable()
     this->sortedEdgeTable.clear();  // 清空边表
     this->edge_horizontal.clear();  // 清空水平边
 
-    int ymin = (double)(this->min.getY() - 1);
-    int ymax = (double)(this->max.getY() + 1);
-    int size_edgeTable = ymax - ymin;
+    int ymin = (int)(this->min.getY());
+    int ymax = (int)(this->max.getY());
+    int size_edgeTable = ymax - ymin + 1;
     this->sortedEdgeTable.resize(size_edgeTable);       // 设置边表大小
 
     Point* p_start = this->points[0];
@@ -200,26 +201,12 @@ bool Polygon::buildEdgeTable()
 void Polygon::scan()
 {
     vector<EdgeS *> edge_active;
-    double y_min = this->min.getY();
+    int y_min = (int)this->min.getY();
     int size_sortedEdgeTable = this->sortedEdgeTable.size();
 
     for(int i = 0; i < size_sortedEdgeTable; i++)
     {
         // 清除已经失效的边
-//        if(edge_active.size() >0)
-//        {
-//            int i = 0;
-//            while(edge_active.size() > i)
-//            {
-//                EdgeS * temp = edge_active[i];  // 获得一条
-//                if((y_min + i) > temp->ymax)
-//                {
-//                    edge_active.erase(edge_active.begin() + i); // 删除vector中第i个元素，i从0开始算
-//                    continue;
-//                }
-//                i++;
-//            }
-//        }
         if(!edge_active.empty())
         {
             vector<EdgeS *>::iterator iter;
@@ -230,13 +217,14 @@ void Polygon::scan()
                 {
                     edge_active.erase(iter);
                     if(!edge_active.empty())
-                        iter = edge_active.begin();
+                        iter = edge_active.begin();     // 从头重新扫描
                     else
                         break;
                 }
             }
         }
-        // 扫描
+
+        // 将新的线段加入到边表中
         if(this->sortedEdgeTable[i] != NULL)
         {
             vector<EdgeS *> *temp = this->sortedEdgeTable[i];
@@ -247,16 +235,18 @@ void Polygon::scan()
             }
         }
 
-        if(edge_active.size() == 0)
+        if(edge_active.empty())
         {
+            // 如果活动边表中没有内容
             continue;
         }
 
         // 画当前扫描线
-        int y_scan = (int)y_min + i;                // 当前扫描的行数
+        int y_scan = y_min + i;                     // 当前扫描的位置
         this->printScanLine(edge_active, y_scan);   // 画扫描线
 
     }
+
     this->printHorizontalLine(this->edge_horizontal);// 画水平线
 
 }
@@ -291,53 +281,41 @@ void Polygon::addEdgeToTable(Point *p_start, Point *p_end)
 {
     // 判断哪个点在上方
     Point * p_up, *p_down;
-    if(p_start->getY() > p_end->getY())
-    {
-        p_up = p_start;
-        p_down = p_end;
-    }
-    else if(p_start->getY() < p_end->getY())
-    {
-        p_up = p_end;
-        p_down = p_start;
-    }
-    else if(p_start->getY() - p_end->getY() < 0.1
-            && p_start->getY() - p_end->getY() > -0.1 )
+    if(p_start->getY() - p_end->getY() < 0.1
+               && p_start->getY() - p_end->getY() > -0.1 )
     {
         // 水平边不加入数组中，加入水平边表中单独处理
         this->edge_horizontal.push_back(new Edge(*p_start, *p_end));
         return;
     }
+    else if(p_start->getY() > p_end->getY())
+    {
+        // p_start 点在上方
+        p_up = p_start;
+        p_down = p_end;
+    }
+    else if(p_start->getY() < p_end->getY())
+    {
+        // p_end 点在上方
+        p_up = p_end;
+        p_down = p_start;
+    }
 
     // 获得EdgeS数据的重要部分
     double dx = (p_up->getX() - p_down->getX()) /
             (p_up->getY() - p_down->getY());        // 斜率的倒数
-    double y_min = p_down->getY();                  // 最小y值
-    double xi = p_down->getX();                     // 最小x值
-    double y_max = p_up->getY();                    // 最大y值
+    //double y_min = p_down->getY();                  // 最下y值
+    int y_min = (int)p_down->getY();
+    double xi = p_down->getX();                     // 最下端x值
+    //double y_max = p_up->getY();                    // 最顶端y值
+    int y_max = (int)p_up->getY();
 
-    // ----------------------线段去掉位置低的那个点
-    if(dx > 1||dx < -1)
-    {
-        // x方向去掉一个点
-        if(dx < 0)
-        {
-            xi = xi - 1;
-        }
-        else if(dx > 0)
-        {
-            xi = xi + 1;
-        }
-
-    }
-    else
-    {
-        // y方向去掉一个点
-        y_min = y_min + 1;
-    }
+    // ----------------------每条边 y方向上缩短一点
+    xi = xi + dx;
+    y_min ++;
 
     // 插入表中
-    vector<EdgeS *> * list_temp = this->sortedEdgeTable[(int)(y_min - this->min.getY())];
+    vector<EdgeS *> * list_temp = this->sortedEdgeTable[(y_min - (int)this->min.getY())];
     if(list_temp == NULL)
     {
         // 如果这个队列为空的话，新建队列
@@ -359,18 +337,11 @@ void Polygon::addEdgeToTable(Point *p_start, Point *p_end)
 void Polygon::printScanLine(vector<EdgeS *> activeEdgeTable, int y)
 {
     list<double> intersection;
-//    int size_activeEdgeTable = activeEdgeTable.size();
 
-//    for(int i = 0; i < size_activeEdgeTable; i++)
-//    {
-//        EdgeS * edge_temp = activeEdgeTable[i];     // 获得每条边
-//        double xi = edge_temp->xi + edge_temp->dx;  // 间隔+1
-//        edge_temp->xi = xi;                         // 更新
-//        intersection.push_back(xi);         // 插入相交队列中，
-//    }
-
-    vector<EdgeS*>::iterator iter_activeEdge;
-    for(iter_activeEdge = activeEdgeTable.begin(); iter_activeEdge < activeEdgeTable.end(); iter_activeEdge++)
+    vector<EdgeS*>::iterator iter_activeEdge;           // 迭代器
+    for(iter_activeEdge = activeEdgeTable.begin();
+        iter_activeEdge < activeEdgeTable.end();
+        iter_activeEdge++)
     {
         EdgeS *edge_temp = *iter_activeEdge;            // 遍历每条边
         double xi = edge_temp->xi + edge_temp->dx;      // 增量
@@ -383,18 +354,18 @@ void Polygon::printScanLine(vector<EdgeS *> activeEdgeTable, int y)
     list<double >::iterator iter = intersection.begin();        // 迭代器
     while(iter != intersection.end())
     {
-        double left = *iter;
+        double left = *iter;            // 左交点
         iter++;
         if(iter == intersection.end())
         {
-            qDebug() << "交点个数为奇数个,"
-                     <<"x:"<<left<<",y:"<<y;
+            qDebug() << "交点个数为奇数个,交点个数： "<< intersection.size()
+                     <<",x:"<<left<<",y:"<<y;
             break;
         }
-        double right = *iter;
+        double right = *iter;           // 右交点
         iter++;
 
-        glColor3d(1.0,0.0,0.0);
+        glColor3d(1.0,0.0,0.0);         // 设置颜色
 
         glBegin(GL_LINES);
             glVertex2i((int)(left - 0.5),y);
