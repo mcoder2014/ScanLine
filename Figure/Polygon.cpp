@@ -359,17 +359,26 @@ void Polygon::addEdgeToTable(Point *p_start, Point *p_end)
 void Polygon::printScanLine(vector<EdgeS *> activeEdgeTable, int y)
 {
     list<double> intersection;
-    int size_activeEdgeTable = activeEdgeTable.size();
+//    int size_activeEdgeTable = activeEdgeTable.size();
 
-    for(int i = 0; i < size_activeEdgeTable; i++)
+//    for(int i = 0; i < size_activeEdgeTable; i++)
+//    {
+//        EdgeS * edge_temp = activeEdgeTable[i];     // 获得每条边
+//        double xi = edge_temp->xi + edge_temp->dx;  // 间隔+1
+//        edge_temp->xi = xi;                         // 更新
+//        intersection.push_back(xi);         // 插入相交队列中，
+//    }
+
+    vector<EdgeS*>::iterator iter_activeEdge;
+    for(iter_activeEdge = activeEdgeTable.begin(); iter_activeEdge < activeEdgeTable.end(); iter_activeEdge++)
     {
-        EdgeS * edge_temp = activeEdgeTable[i];     // 获得每条边
-        double xi = edge_temp->xi + edge_temp->dx;  // 间隔+1
-        edge_temp->xi = xi;                         // 更新
-        intersection.push_back(xi);         // 插入相交队列中，
+        EdgeS *edge_temp = *iter_activeEdge;            // 遍历每条边
+        double xi = edge_temp->xi + edge_temp->dx;      // 增量
+        edge_temp->xi = xi;                             // 赋值
+        intersection.push_back(xi);                     // 加入相交队列
     }
 
-    intersection.sort();
+    intersection.sort();        // 对交点排序
 
     list<double >::iterator iter = intersection.begin();        // 迭代器
     while(iter != intersection.end())
@@ -378,8 +387,9 @@ void Polygon::printScanLine(vector<EdgeS *> activeEdgeTable, int y)
         iter++;
         if(iter == intersection.end())
         {
-            qDebug() << "交点个数为奇数个";
-            continue;
+            qDebug() << "交点个数为奇数个,"
+                     <<"x:"<<left<<",y:"<<y;
+            break;
         }
         double right = *iter;
         iter++;
@@ -387,8 +397,8 @@ void Polygon::printScanLine(vector<EdgeS *> activeEdgeTable, int y)
         glColor3d(1.0,0.0,0.0);
 
         glBegin(GL_LINES);
-            glVertex2d(left,(double)y);
-            glVertex2d(right,(double)y);
+            glVertex2i((int)(left - 0.5),y);
+            glVertex2i((int)(right),y);
         glEnd();
 
     }
