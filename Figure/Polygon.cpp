@@ -9,7 +9,7 @@ using std::vector;
 
 Polygon::Polygon()
 {
-
+    this->red = this->green = this->blue = 0;       // 初始为红色
 }
 
 Polygon::Polygon(vector<Point *>& points)
@@ -267,6 +267,20 @@ void Polygon::print()
 
 /**
  * @Author Chaoqun
+ * @brief  设置颜色
+ * @param  QColor
+ * @return void
+ * @date   2017/04/10
+ */
+void Polygon::setColor(QColor color)
+{
+    this->red = color.redF();
+    this->green = color.greenF();
+    this->blue = color.blueF();
+}
+
+/**
+ * @Author Chaoqun
  * @brief  添加边到排序边表
  * @param  Point* p_start;
  * @param  Point* p_end;
@@ -363,14 +377,22 @@ void Polygon::printScanLine(vector<EdgeS *> activeEdgeTable, int y)
         double right = *iter;           // 右交点
         iter++;
 
-        glColor3d(1.0,0.0,0.0);         // 设置颜色
-
+        //glColor3d(1.0,0.0,0.0);         // 设置颜色
+        glColor3d(this->red, this->green, this->blue);  // 设置颜色
 // BUG!!!
 //        glBegin(GL_LINES);
 //            glVertex2i((int)(left),y);
 //            glVertex2i((int)(right),y);
 //        glEnd();
+        // 画线
         glBegin(GL_POINTS);
+
+        if(left==right) // 如果两条线是重合的，会填一条线
+        {
+            glEnd();
+            return;
+        }
+
         for(int i =left; i <= right; i++)
             glVertex2i(i,y);
         glEnd();
@@ -391,12 +413,27 @@ void Polygon::printHorizontalLine(vector<Edge *> edgeHorizontal)
     while(iter != edgeHorizontal.end())
     {
         Edge* edge_temp= *iter;     // 获得水平边
-        glColor3d(0.0,0.0,0.0);
-        glBegin(GL_LINES);
-           glVertex2i(edge_temp->getStart()->getX(),
-                      edge_temp->getStart()->getY());
-           glVertex2i(edge_temp->getEnd()->getX(),
-                      edge_temp->getEnd()->getY());
+        glColor3d(this->red, this->green, this->blue);  // 设置颜色
+//        glBegin(GL_LINES);
+//           glVertex2i(edge_temp->getStart()->getX(),
+//                      edge_temp->getStart()->getY());
+//           glVertex2i(edge_temp->getEnd()->getX(),
+//                      edge_temp->getEnd()->getY());
+//        glEnd();
+        int left = edge_temp->getStart()->getX();
+        int right = edge_temp->getEnd()->getX();
+        int y = edge_temp->getStart()->getY();
+
+        glBegin(GL_POINTS);
+
+        if(left==right) // 如果两条线是重合的，会填一条线
+        {
+            glEnd();
+            return;
+        }
+
+        for(int i =left; i <= right; i++)
+            glVertex2i(i,y);
         glEnd();
 
         iter++;

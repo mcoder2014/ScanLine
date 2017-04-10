@@ -2,6 +2,7 @@
 #define POLYGON_H
 #include <vector>
 #include <list>
+#include <QColor>
 #include "Point.h"
 #include "Edge.h"
 #include "edges.h"
@@ -31,6 +32,14 @@ public:
     void scan();        // 扫描
     void print();            // 输出多边形信息
 
+    void setColor(QColor color);       // 将QColor转换为rgb
+    double getRed(){return this->red;}
+    void setRed(double red){this->red = red;}
+    double getGreen(){return this->green;}
+    void setGreen(double green){this->green = green;}
+    double getBlue(){return this->blue;}
+    void setBlue(double blur){this->blue = blue;}
+
 private:
     vector<Point*> points;       // 点
     vector<vector<EdgeS*>*> sortedEdgeTable;
@@ -38,6 +47,8 @@ private:
 
     Point min;          // 多边形包围矩形的 左下角
     Point max;          // 多边形包围矩形的 右下角
+
+    double red, green, blue;        // 绘图的颜色
 
     void addEdgeToTable(Point *p_start, Point *p_end);             // 添加边到排序边表
     void printScanLine(vector<EdgeS*> activeEdgeTable, int y);     // 画活动边表的扫描线

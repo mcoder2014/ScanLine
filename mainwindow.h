@@ -55,12 +55,15 @@ private:
     void initAction();          // 初始化QAction
     void connectAction();       // 初始化界面后，连接操作
     void deleteAction();        // 释放QAction
+    void setFillColor();        // 设置填充颜色
 
 
 
     void createNewWidget();     // 新建画板
-
     void drawPolygon();         // 切换绘制与未绘制状态
+    void saveFile();            // 保存画板到文件
+    void loadFile();            // 从文件中读取画板
+
 private slots:
     void setLineEditValue(int value);   // 显示放大倍数
 

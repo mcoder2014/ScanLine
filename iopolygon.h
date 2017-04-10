@@ -19,8 +19,13 @@ public:
 
     int writeFile(vector<Mcoder::Polygon *>* polygons, QFile *file = 0);  // 写出文件到xxx
     vector<Mcoder::Polygon *> readFile(QFile *file = 0);    // 读文件
-    QJsonObject *convert(Polygon *polygon);           // 将一个Polygon转换成QJsonObject
-    Polygon *fromJson(QJsonObject &json_obj );
+    QJsonObject *convert(Mcoder::Polygon *polygon);           // 将一个Polygon转换成QJsonObject
+    Mcoder::Polygon *fromJson(QJsonObject &json_obj );
+
+    QJsonObject *convert(vector<Mcoder::Polygon *> *polygons);     // 将vector向量转换为QJsonObject
+    vector<Mcoder::Polygon *> * toPolygons(QJsonObject &json_obj);   // 将一个QJsonObject转换为 Polygons
+
+
 private:
     QFile file;
 

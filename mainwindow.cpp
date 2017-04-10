@@ -9,6 +9,10 @@
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QMessageBox>
+#include <QColorDialog>
+#include <QFileDialog>
+#include "iopolygon.h"
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -150,8 +154,8 @@ void MainWindow::initAction()
 
     this->modesAction = new QAction(QIcon(":/icon/source/modes.png"),QObject::tr("Mode"),this);
     this->modesAction->setStatusTip(QObject::tr("Change the mode to change the way you fill polygons."));
-    list.append(this->modesAction);
-    this->editMenu->addAction(this->modesAction);
+    //list.append(this->modesAction);
+    //this->editMenu->addAction(this->modesAction);
 
     this->polygonAction = new QAction(QIcon(":/icon/source/polygon.png"),QObject::tr("Polygon"),this);
     this->polygonAction->setStatusTip(QObject::tr("Draw your polygons , start with Left Button, end with right button."));
@@ -165,8 +169,8 @@ void MainWindow::initAction()
 
     this->fillAction = new QAction(QIcon(":/icon/source/fill.png"),QObject::tr("Fill"),this);
     this->fillAction->setStatusTip(QObject::tr("Fill the polygons"));
-    list.append(this->fillAction);
-    this->editMenu->addAction(this->fillAction);
+    //list.append(this->fillAction);
+    //this->editMenu->addAction(this->fillAction);
 
     this->colorAction = new QAction(QIcon(":/icon/source/color.png"),QObject::tr("Color"),this);
     this->colorAction->setStatusTip(QObject::tr("Change the color for next polygon"));
@@ -212,21 +216,26 @@ void MainWindow::connectAction()
             this, &MainWindow::createNewWidget);         // 创建新画板
     connect(this->polygonAction, &QAction::triggered,
             this,&MainWindow::drawPolygon);              // 切换画多边形模式
+
+    // 绑定的是widget ，所以widget换新的了，应该解除绑定并重新绑定
     connect(this->backAction, &QAction::triggered,
             this->widget,&CustomWidget::backPolygon);    // 删除上一步
     connect(this->cleanAction,&QAction::triggered,
             this->widget,&CustomWidget::cleanPolygons);  // 清空所有多边形
 
+    connect(this->colorAction,&QAction::triggered,
+            this,&MainWindow::setFillColor);             // 设置下一个多边形的填充颜色
+
     connect(this->fillAction,&QAction::triggered,
             this,&MainWindow::test);
     connect(this->modesAction,&QAction::triggered,
             this,&MainWindow::test);
+
     connect(this->saveAction,&QAction::triggered,
-            this,&MainWindow::test);
+            this,&MainWindow::saveFile);                   // 读取文件
     connect(this->openAction,&QAction::triggered,
-            this,&MainWindow::test);
-    connect(this->colorAction,&QAction::triggered,
-            this,&MainWindow::test);
+            this,&MainWindow::loadFile);                   // 保存文件
+
 
     // 缩放画布倍数
     connect(this->scale_slider,SIGNAL(valueChanged(int)),
@@ -244,6 +253,20 @@ void MainWindow::deleteAction()
     delete this->backAction;
     delete this->fillAction;
     delete this->colorAction;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  设置多边形填充颜色
+ * @param  void
+ * @return void
+ * @date   2017/04/10
+ */
+void MainWindow::setFillColor()
+{
+    QColor color = QColorDialog::getColor();
+    if(this->widget != NULL)
+        this->widget->setColor(color);
 }
 
 /**
@@ -278,6 +301,11 @@ void MainWindow::createNewWidget()
      if(this->widget != NULL)
      {
          this->setCentralWidget(temp);
+         disconnect(this->backAction, &QAction::triggered,
+                 this->widget,&CustomWidget::backPolygon);    // 删除上一步
+         disconnect(this->cleanAction,&QAction::triggered,
+                 this->widget,&CustomWidget::cleanPolygons);  // 清空所有多边形
+
          delete this->widget;
          this->widget = NULL;
      }
@@ -341,4 +369,41 @@ void MainWindow::drawPolygon()
         }
 
     }
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  将画板保存到文件
+ * @param  void
+ * @return void
+ * @date   2017/04/10
+ */
+void MainWindow::saveFile()
+{
+//    QString fileName = QFileDialog::getOpenFileName(this,
+//         tr("Save Canvas"), "", tr("json file (*.json)"));
+    QFileDialog * fileDialog = new QFileDialog(this);           // 新建一个QFileDialog
+    fileDialog->setWindowIcon(QIcon(":/icon/source/save.png")); // 设置保存文件图标
+    fileDialog->setAcceptMode(QFileDialog::AcceptSave);         // 设置对话框为保存文件类型
+    fileDialog->setFileMode(QFileDialog::AnyFile);              // 设置文件对话框能够显示任何文件
+    fileDialog->setViewMode(QFileDialog::Detail);               // 文件以细节形式显示出来
+
+
+    fileDialog->setNameFilter(tr("JSON files(*.json)"));            // 设置文件过滤器
+    if(fileDialog->exec() == QDialog::Accepted)
+    {
+        QString path = fileDialog->selectedFiles()[0];      // 用户选择文件名
+        qDebug() << path;
+
+        vector<Mcoder::Polygon *> * polygons = this->widget->getPolygons();
+        IOpolygon io(path);
+        io.writeFile(polygons);
+    }
+
+
+}
+
+void MainWindow::loadFile()
+{
+
 }

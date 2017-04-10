@@ -23,6 +23,7 @@ CustomWidget::CustomWidget(QWidget *parent)
     this->pushButton = -1;
     this->setMouseTracking(true);       // 发起鼠标监控
     this->scale = 1.0;      // widget缩放倍数默认为 1
+    this->currentColor.setRgb(0,0,0);   // 初始颜色为黑色
 }
 
 CustomWidget::~CustomWidget()
@@ -205,6 +206,30 @@ void CustomWidget::resizeGL(float scale)
 
 /**
  * @Author Chaoqun
+ * @brief  设置绘画颜色
+ * @param  QColor color
+ * @return void
+ * @date   2017/04/10
+ */
+void CustomWidget::setColor(QColor color)
+{
+    this->currentColor.setRgba(color.rgba());       // 设置颜色
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  获得所有多边形
+ * @param  void
+ * @return vector<Polygon *> *
+ * @date   2017/xx/xx
+ */
+vector<Mcoder::Polygon *> *CustomWidget::getPolygons()
+{
+    return &(this->polygons);
+}
+
+/**
+ * @Author Chaoqun
  * @brief  鼠标移动事件响应函数
  * @param  QMouseEvent *event
  * @date   2017/04/06
@@ -289,9 +314,9 @@ void CustomWidget::mouseReleaseEvent(QMouseEvent *event)
             //this->temp->push(this->mouse_x,this->height - this->mouse_y);
             if(this->temp->getSize() > 2)
             {
-                //this->temp->scanLine();            // 计算边表
-                this->polygons.push_back(this->temp);   // 将多边形添加到数组
-                this->temp = NULL;          // 指针置空
+                this->temp->setColor(this->currentColor);   // 设置多边形填充颜色
+                this->polygons.push_back(this->temp);       // 将多边形添加到数组
+                this->temp = NULL;                          // 指针置空
                 this->modeFlag = 1;
             }
             else

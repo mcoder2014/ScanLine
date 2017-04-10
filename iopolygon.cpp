@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 #include <iterator>
+#include <QJsonDocument>
 
 using std::array;
 
@@ -55,7 +56,25 @@ int IOpolygon::writeFile(vector<Polygon *> *polygons, QFile *file)
         this->file.setFileName(file->fileName());
     }
 
-    return -1;
+    // 文件不存在要创建文件
+
+    if(!this->file.open(QIODevice::ReadWrite | QIODevice::Text))
+    {
+        qDebug() << "文件打开失败";
+        return 1;
+    }
+    QTextStream txtOutput(&(this->file));   // 新建文件输出流
+
+    QJsonObject * json_obj = this->convert(polygons);       // 转换成QJsonOnject
+    QJsonDocument * json_doc = new QJsonDocument(*json_obj);    // 准备导出json文本
+    QByteArray json_bytearray = json_doc->toJson(QJsonDocument::Indented);
+    //QString json_str(json_bytearray);
+
+    txtOutput << json_bytearray << endl;
+
+    this->file.close();     // 使用后要关闭文件
+
+    return 1;
 }
 
 /**
@@ -98,6 +117,9 @@ QJsonObject* IOpolygon::convert(Polygon* polygon)
 
     json_obj = new QJsonObject();
     json_obj->insert("points",*json_array);
+    json_obj->insert("red",polygon->getRed());
+    json_obj->insert("green",polygon->getGreen());
+    json_obj->insert("blue",polygon->getBlue());
 
     return json_obj;
 }
@@ -135,5 +157,73 @@ Polygon *IOpolygon::fromJson(QJsonObject &json_obj)
         //qDebug() <<obj["x"].toInt() <<","<<obj["y"].toInt();
     }
 
+    // 获得颜色
+    double red = json_obj.value("red").toDouble();
+    polygon->setRed(red);
+    double green = json_obj.value("green").toDouble();
+    polygon->setGreen(green);
+    double blue = json_obj.value("blue").toDouble();
+    polygon->setBlue(blue);
+
     return polygon;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  将polygons数组转换为QJsonObject
+ * @param  vector<Polygon *> *polygons
+ * @return QJsonObject
+ * @date   2017/04/10
+ */
+QJsonObject *IOpolygon::convert(vector<Polygon *> *polygons)
+{
+    int size = polygons->size();        // 获取多边形数量
+    QJsonArray arr;                 // 新建一个空的QJsonArray
+
+    for(int i = 0; i < size ; i++)
+    {
+        Polygon * temp = polygons->at(i);
+        QJsonObject * json_obj = this->convert(temp);    // 转换对象
+        qDebug() << i <<" of "<< size;
+        arr.append( *json_obj );    // 加入到数组中
+    }
+
+    QJsonObject * json_obj = new QJsonObject();
+    json_obj->insert("polygons",arr);               // 将多边形插入到对象中
+
+    return json_obj;
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  将QJsonObject转换为polygons
+ * @param  QJsonObject &json_obj
+ * @return vector<Polygon *> *
+ * @date   2017/04/10
+ */
+vector<Polygon *> * IOpolygon::toPolygons(QJsonObject &json_obj)
+{
+    // 先判断是否包含 polygons
+    if(json_obj["polygons"] == NULL)
+    {
+        qDebug() << "不包含 polygon 字段 ";
+        return new vector<Polygon *>();
+    }
+
+    QJsonValue polygons = json_obj.value("polygons");
+    if(!polygons.isArray())
+    {
+        qDebug() << "polygons 不是数组";
+    }
+    QJsonArray json_array = polygons.toArray();
+    vector<Polygon *> *poly_vec = new vector<Polygon *>();                 // 新建vector<Polygon *>
+
+    int size = json_array.size();
+    for(int i = 0; i < size; i++)
+    {
+        Polygon* temp = this->fromJson(json_array.at(i).toObject());
+        poly_vec->push_back(temp);
+    }
+
+    return poly_vec;        // 返回多边形
 }

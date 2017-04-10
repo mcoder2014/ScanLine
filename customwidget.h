@@ -30,12 +30,16 @@ public:
     float getScale();       // 获得缩放倍数
 
     void resizeGL(float scale);        // 调整缩放倍数
+    void setColor(QColor color);       // 设置颜色
+    vector<Mcoder::Polygon *> * getPolygons();  //　获得所有多边形
 
 protected:
    void initializeGL();
    void paintGL();
    void resizeGL(int width, int height);
    void resizeGL(int width, int height, float scale);       // 设置屏幕缩放
+
+   QColor currentColor;                                     // 当前绘制颜色
 
 
 private:
