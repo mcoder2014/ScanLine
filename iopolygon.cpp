@@ -57,7 +57,6 @@ int IOpolygon::writeFile(vector<Polygon *> *polygons, QFile *file)
     }
 
     // 文件不存在要创建文件
-
     if(!this->file.open(QIODevice::ReadWrite | QIODevice::Text))
     {
         qDebug() << "文件打开失败";
@@ -84,9 +83,31 @@ int IOpolygon::writeFile(vector<Polygon *> *polygons, QFile *file)
  * @return vector<Polygon *>
  * @date   2017/04/09
  */
-vector<Polygon *> IOpolygon::readFile(QFile *file)
+vector<Polygon *>* IOpolygon::readFile(QFile *file)
 {
-    return (vector<Polygon *>());
+    if(file != NULL)
+    {
+        this->file.setFileName(file->fileName());
+        return NULL;
+    }
+    if(!this->file.exists())
+    {
+        qDebug() << "文件不存在 ";
+        return NULL;
+    }
+    // 文件不存在要报错
+    if(!this->file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "文件打开失败 ";
+        return NULL;
+    }
+
+    QTextStream txtInput(&(this->file));        // 设置文件流
+    QString str = txtInput.readAll();           // 读取全部字符串
+    QJsonDocument jd_doc = QJsonDocument::fromJson(str.toLocal8Bit(),Q_NULLPTR);
+    vector<Polygon *>* vec = this->toPolygons(jd_doc.object());
+
+    return vec;
 }
 
 /**

@@ -32,6 +32,8 @@ public:
     void resizeGL(float scale);        // 调整缩放倍数
     void setColor(QColor color);       // 设置颜色
     vector<Mcoder::Polygon *> * getPolygons();  //　获得所有多边形
+    void setPolygons(vector<Mcoder::Polygon *> * polygons);  //　设置所有多边形
+    void needUpdate(){this->updateGL();}
 
 protected:
    void initializeGL();

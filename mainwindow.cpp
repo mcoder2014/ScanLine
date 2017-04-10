@@ -387,7 +387,7 @@ void MainWindow::saveFile()
     fileDialog->setAcceptMode(QFileDialog::AcceptSave);         // 设置对话框为保存文件类型
     fileDialog->setFileMode(QFileDialog::AnyFile);              // 设置文件对话框能够显示任何文件
     fileDialog->setViewMode(QFileDialog::Detail);               // 文件以细节形式显示出来
-
+    fileDialog->setWindowTitle(tr("Save the canvas content as a JSON file"));
 
     fileDialog->setNameFilter(tr("JSON files(*.json)"));            // 设置文件过滤器
     if(fileDialog->exec() == QDialog::Accepted)
@@ -403,7 +403,43 @@ void MainWindow::saveFile()
 
 }
 
+/**
+ * @Author Chaoqun
+ * @brief  读取目标文件
+ * @param  void
+ * @return void
+ * @date   2017/04/10
+ */
 void MainWindow::loadFile()
 {
+    QFileDialog * fileDialog = new QFileDialog(this);           // 新建一个QFileDialog
+    fileDialog->setWindowIcon(QIcon(":/icon/source/open.png")); // 设置打开文件图标
+    fileDialog->setAcceptMode(QFileDialog::AcceptOpen);         // 设置对话框为打开文件类型
+    fileDialog->setFileMode(QFileDialog::ExistingFile);         // 设置文件对话框能够存在的文件
+    fileDialog->setViewMode(QFileDialog::Detail);               // 文件以细节形式显示出来
+    fileDialog->setNameFilter(tr("JSON files(*.json)"));            // 设置文件过滤器
+    fileDialog->setWindowTitle(tr("Open A JSON file for this canvas"));
+
+    if(fileDialog->exec() == QDialog::Accepted)
+    {
+        QString path = fileDialog->selectedFiles()[0];      // 用户选择文件名
+        qDebug() << path;
+
+        vector<Mcoder::Polygon *> * polygons = NULL;
+        IOpolygon io(path);
+        //io.writeFile(polygons);
+        polygons = io.readFile();
+        if(polygons == NULL)
+        {
+            qDebug() << "打开文件失败";
+            return;
+        }
+
+        if(this->widget!= NULL)
+        {
+            this->widget->setPolygons(polygons);
+            this->widget->needUpdate();
+        }
+    }
 
 }

@@ -230,6 +230,19 @@ vector<Mcoder::Polygon *> *CustomWidget::getPolygons()
 
 /**
  * @Author Chaoqun
+ * @brief  设置
+ * @param  参数
+ * @return 返回值
+ * @date   2017/04/10
+ */
+void CustomWidget::setPolygons(vector<Mcoder::Polygon *> *polygons)
+{
+    this->polygons.clear();
+    this->polygons = (*polygons);
+}
+
+/**
+ * @Author Chaoqun
  * @brief  鼠标移动事件响应函数
  * @param  QMouseEvent *event
  * @date   2017/04/06

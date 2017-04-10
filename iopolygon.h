@@ -18,7 +18,7 @@ public:
     void setFileName(const QString& fileName);      // 设置文件路径
 
     int writeFile(vector<Mcoder::Polygon *>* polygons, QFile *file = 0);  // 写出文件到xxx
-    vector<Mcoder::Polygon *> readFile(QFile *file = 0);    // 读文件
+    vector<Mcoder::Polygon *> *readFile(QFile *file = 0);    // 读文件
     QJsonObject *convert(Mcoder::Polygon *polygon);           // 将一个Polygon转换成QJsonObject
     Mcoder::Polygon *fromJson(QJsonObject &json_obj );
 
