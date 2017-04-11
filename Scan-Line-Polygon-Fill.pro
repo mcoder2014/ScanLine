@@ -43,11 +43,14 @@ HEADERS  += mainwindow.h \
     Figure/edges.h \
     iopolygon.h
 
-#INCLUDEPATH += $$PWD/glutdlls37beta
-# $$PWD 当前工作路径 代表.pro 所在文件夹
+win32{
+    INCLUDEPATH += $$PWD/glutdlls37beta
+    # $$PWD 当前工作路径 代表.pro 所在文件夹
 
-#LIBS += $$PWD/glutdlls37beta/glut.lib \
-#        $$PWD/glutdlls37beta/glut32.lib
+    LIBS += $$PWD/glutdlls37beta/glut.lib \
+            $$PWD/glutdlls37beta/glut32.lib
+}
+
 
 DESTDIR = ./bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件
