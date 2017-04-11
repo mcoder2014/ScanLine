@@ -12,4 +12,8 @@
         <file>source/delete.png</file>
         <file>source/exit.png</file>
     </qresource>
+    <qresource prefix="/translator">
+        <file>app_zh_CN.qm</file>
+        <file>qt_zh_CN.qm</file>
+    </qresource>
 </RCC>

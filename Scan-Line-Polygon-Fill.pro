@@ -59,3 +59,5 @@ RESOURCES += \
     icon.qrc
 
 RC_ICONS = $$PWD/source/icon.ico
+
+TRANSLATIONS += app_zh_CN.ts
