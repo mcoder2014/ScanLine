@@ -177,6 +177,10 @@ void MainWindow::initAction()
     list.append(this->colorAction);
     this->editMenu->addAction(this->colorAction);
 
+    this->aboutAction = new QAction(tr("About Qt"),this);
+    this->aboutAction->setStatusTip(tr("Some important things about Qt application."));
+    this->aboutMenu->addAction(this->aboutAction);
+
     this->toolBar->addActions(list);        // 添加按钮到工具栏
 
     // label用来提示本部分的缩放功能
@@ -236,6 +240,9 @@ void MainWindow::connectAction()
     connect(this->openAction,&QAction::triggered,
             this,&MainWindow::loadFile);                   // 保存文件
 
+    connect(this->aboutAction,&QAction::triggered,
+            this,&MainWindow::aboutQt);
+
 
     // 缩放画布倍数
     connect(this->scale_slider,SIGNAL(valueChanged(int)),
@@ -253,6 +260,7 @@ void MainWindow::deleteAction()
     delete this->backAction;
     delete this->fillAction;
     delete this->colorAction;
+    delete this->aboutAction;
 }
 
 /**
@@ -442,4 +450,17 @@ void MainWindow::loadFile()
         }
     }
 
+}
+
+/**
+ * @Author Chaoqun
+ * @brief  关于QT
+ * @param  void
+ * @return void
+ * @date   2017/04/11
+ */
+void MainWindow::aboutQt()
+{
+    QMessageBox mb(this);
+    mb.aboutQt(this,tr("关于Qt"));
 }

@@ -38,6 +38,8 @@ private:
     QAction * colorAction;      // 切换颜色
     QAction * exitAction;       // 退出程序->藏于菜单中
 
+    QAction * aboutAction;      // 关于
+
     QLabel * scale_label;       // 用来提醒本部分是缩放功能
     QSlider * scale_slider;     // 绘图区缩放比例
     QLineEdit * scale_edit;
@@ -63,6 +65,9 @@ private:
     void drawPolygon();         // 切换绘制与未绘制状态
     void saveFile();            // 保存画板到文件
     void loadFile();            // 从文件中读取画板
+
+    void aboutQt();             // 弹出关于QT的相关的
+
 
 private slots:
     void setLineEditValue(int value);   // 显示放大倍数
