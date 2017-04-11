@@ -1,5 +1,5 @@
 #include "customwidget.h"
-#include <gl/glut.h>
+#include <GL/glut.h>
 #include <QMessageBox>
 #include <QtDebug>
 
@@ -181,8 +181,11 @@ void CustomWidget::resizeGL(int width, int height, float scale)
     int part_width = (int)width * scale * 0.5;          // 实际屏幕中显示的范围 -x
     int part_height = (int)height * scale * 0.5;        // 实际屏幕中显示的范围 -y
 
-    gluOrtho2D(-part_width,part_width,
-               -part_height,part_height);                       // 设置渲染为2D
+//    gluOrtho2D(-part_width,part_width,
+//               -part_height,part_height);                       // 设置渲染为2D
+    glOrtho( -part_width, part_width,
+            -part_height , part_height,
+            -10, 10 );
     glMatrixMode( GL_MODELVIEW );                       // GL_MODELVIEW,对模型视景矩阵堆栈应用随后的矩阵操作
     glLoadIdentity();
 

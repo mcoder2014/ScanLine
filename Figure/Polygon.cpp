@@ -1,5 +1,5 @@
 #include "Polygon.h"
-#include <gl/glut.h>
+#include <GL/glut.h>
 #include "Point.h"
 #include <iostream>
 #include <QDebug>

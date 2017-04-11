@@ -29,26 +29,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         mainwindow.cpp \
     customwidget.cpp \
-    Figure\Point.cpp \
-    Figure\Edge.cpp \
-    Figure\Polygon.cpp \
+    Figure/Point.cpp \
+    Figure/Edge.cpp \
+    Figure/Polygon.cpp \
     Figure/edges.cpp \
     iopolygon.cpp
 
 HEADERS  += mainwindow.h \
     customwidget.h \
-    Figure\Point.h \
-    Figure\Edge.h \
-    Figure\Polygon.h \
-    mouse.h \
+    Figure/Point.h \
+    Figure/Edge.h \
+    Figure/Polygon.h \
     Figure/edges.h \
     iopolygon.h
 
-INCLUDEPATH += $$PWD/glutdlls37beta
+#INCLUDEPATH += $$PWD/glutdlls37beta
 # $$PWD 当前工作路径 代表.pro 所在文件夹
 
-LIBS += $$PWD/glutdlls37beta/glut.lib \
-        $$PWD/glutdlls37beta/glut32.lib
+#LIBS += $$PWD/glutdlls37beta/glut.lib \
+#        $$PWD/glutdlls37beta/glut32.lib
 
 DESTDIR = ./bin     # 生成文件在这
 MOC_DIR = ./moc     # Q_OBJECT 类转换后的文件

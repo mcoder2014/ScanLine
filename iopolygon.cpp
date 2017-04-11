@@ -105,7 +105,8 @@ vector<Polygon *>* IOpolygon::readFile(QFile *file)
     QTextStream txtInput(&(this->file));        // 设置文件流
     QString str = txtInput.readAll();           // 读取全部字符串
     QJsonDocument jd_doc = QJsonDocument::fromJson(str.toLocal8Bit(),Q_NULLPTR);
-    vector<Polygon *>* vec = this->toPolygons(jd_doc.object());
+    QJsonObject js_obj = jd_doc.object();       // get obj
+    vector<Polygon *>* vec = this->toPolygons(js_obj);
 
     return vec;
 }
@@ -154,7 +155,7 @@ QJsonObject* IOpolygon::convert(Polygon* polygon)
  */
 Polygon *IOpolygon::fromJson(QJsonObject &json_obj)
 {
-    if(json_obj["points"] == NULL)
+    if(json_obj.value("points").isNull())
     {
         qDebug() << "不是我们需要的类 ";
         return NULL;
@@ -225,7 +226,7 @@ QJsonObject *IOpolygon::convert(vector<Polygon *> *polygons)
 vector<Polygon *> * IOpolygon::toPolygons(QJsonObject &json_obj)
 {
     // 先判断是否包含 polygons
-    if(json_obj["polygons"] == NULL)
+    if(json_obj["polygons"].isNull())
     {
         qDebug() << "不包含 polygon 字段 ";
         return new vector<Polygon *>();
@@ -242,7 +243,9 @@ vector<Polygon *> * IOpolygon::toPolygons(QJsonObject &json_obj)
     int size = json_array.size();
     for(int i = 0; i < size; i++)
     {
-        Polygon* temp = this->fromJson(json_array.at(i).toObject());
+        QJsonValue json_value =  json_array.at(i);
+        QJsonObject temp_obj = json_value.toObject();
+        Polygon* temp = this->fromJson(temp_obj);
         poly_vec->push_back(temp);
     }
 
