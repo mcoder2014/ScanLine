@@ -38,7 +38,7 @@ public:
     double getGreen(){return this->green;}
     void setGreen(double green){this->green = green;}
     double getBlue(){return this->blue;}
-    void setBlue(double blur){this->blue = blue;}
+    void setBlue(double blue){this->blue = blue;}
 
 private:
     vector<Point*> points;       // 点
